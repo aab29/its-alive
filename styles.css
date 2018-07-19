@@ -8,7 +8,7 @@ html, body {
   font-family: 'Roboto', sans-serif;
 }
 
-#output {
-  padding: 20px;
+div.container {
+  width: 100%;
   text-align: center;
 }
