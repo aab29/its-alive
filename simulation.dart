@@ -21,6 +21,8 @@ class Simulation {
   Timer _timer = new Timer(Duration.zero, () {});
   Duration _timerDuration = Duration.zero;
 
+  int _animationFrameID;
+
   ButtonInputElement _pauseButton = querySelector("#pause_button");
   NumberInputElement _fpsBox = querySelector("#fps_box");
 
@@ -37,11 +39,12 @@ class Simulation {
 
   void _stopAnimating() {
     _timer.cancel();
+    window.cancelAnimationFrame(_animationFrameID);
   }
 
   void _startAnimating() {
     _updateFps();
-    window.requestAnimationFrame(_update);
+    _animationFrameID = window.requestAnimationFrame(_update);
   }
 
   void _update(num time) {
@@ -51,8 +54,7 @@ class Simulation {
       _grid.draw(_context, time);
       _grid.update();
 
-      window.requestAnimationFrame(_update);
-
+      _animationFrameID = window.requestAnimationFrame(_update);
     });
   }
 
@@ -83,6 +85,8 @@ class Simulation {
   }
 
   void set state(SimulationState value) {
+
+
 
     if (value == SimulationState.running) {
       _pauseButton.value = "Pause";
