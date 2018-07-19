@@ -23,16 +23,23 @@ class Simulation {
 
   int _animationFrameID;
 
-  ButtonInputElement _pauseButton = querySelector("#pause_button");
   NumberInputElement _fpsBox = querySelector("#fps_box");
+  ButtonInputElement _pauseButton = querySelector("#pause_button");
+  ButtonInputElement _clearButton = querySelector("#clear_button");
+  ButtonInputElement _randomizeButton = querySelector("#randomize_button");
 
   Simulation(this._canvas, this._context) {
     _canvasSize = _canvas.width.toDouble();
     _grid = new Grid(_canvasSize);
 
-    _pauseButton.onClick.listen(_onPausePressed);
-    _fpsBox.onInput.listen((_) => _updateFps());
     _canvas.onClick.listen(_onCanvasClicked);
+    _fpsBox.onInput.listen((_) => _updateFps());
+    _pauseButton.onClick.listen(_onPausePressed);
+    _clearButton.onClick.listen(_onClearPressed);
+    _randomizeButton.onClick.listen(_onRandomizePressed);
+
+    _clearButton.disabled = false;
+    _randomizeButton.disabled = false;
 
     state = SimulationState.running;
   }
@@ -51,8 +58,8 @@ class Simulation {
     _timer.cancel();
     _timer = new Timer(_timerDuration, () {
 
-      _grid.draw(_context, time);
       _grid.update();
+      _grid.draw(_context);
 
       _animationFrameID = window.requestAnimationFrame(_update);
     });
@@ -84,10 +91,28 @@ class Simulation {
     }
   }
 
+  void _onClearPressed(_) {
+    print("Clear pressed");
+
+    state = SimulationState.paused;
+    _grid.clear();
+    _grid.draw(_context);
+  }
+
+  void _onRandomizePressed(_) {
+    print("Randomize pressed");
+
+    state = SimulationState.paused;
+    _grid.randomizeCells();
+    _grid.draw(_context);
+  }
+
   void set state(SimulationState value) {
+
     if (value == SimulationState.running) {
       _pauseButton.value = "Pause";
       _pauseButton.disabled = false;
+
       _startAnimating();
     } else if (value == SimulationState.paused) {
       _pauseButton.value = "Resume";
@@ -107,9 +132,19 @@ class Simulation {
   SimulationState get state => _state;
 
   void _onCanvasClicked(MouseEvent event) {
-    var clickLocation = event.offset;
-    var cell = _grid.cellAtLocation(clickLocation);
-    print("Clicked at $clickLocation: $cell");
+    
+    if (state == SimulationState.running) {
+      state = SimulationState.paused;
+    } else if ((state == SimulationState.paused) ||
+               (state == SimulationState.stopped)) {
+      var clickLocation = event.offset;
+      var cell = _grid.cellAtLocation(clickLocation);
+      print("Clicked at $clickLocation: $cell");
+      cell.isAlive = !(cell.isAlive);
+      _grid.draw(_context);
+    } else {
+      throw(new UnsupportedError("Canvas clicked with unsupported state: $state"));
+    }
   }
 
 }

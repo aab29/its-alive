@@ -62,12 +62,18 @@ class Grid {
     }
   }
 
+  void clear() {
+    for (var cell in _cells) {
+      cell.isAlive = false;
+    }
+  }
+
   void update() {
     _cells.forEach((cell) => cell.mark());
     _cells.forEach((cell) => cell.resolve());
   }
 
-  void draw(CanvasRenderingContext2D context, double time) {
+  void draw(CanvasRenderingContext2D context) {
 
     context
         ..setFillColorRgb(0, 38, 0)
