@@ -47,4 +47,7 @@ class Cell {
 
   void resolve() => isAlive = isMarkedToLive;
 
+  @override
+  String toString() => "Cell($xIndex, $yIndex)";
+
 }

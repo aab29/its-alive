@@ -31,8 +31,8 @@ class Simulation {
     _grid = new Grid(_canvasSize);
 
     _pauseButton.onClick.listen(_onPausePressed);
-
     _fpsBox.onInput.listen((_) => _updateFps());
+    _canvas.onClick.listen(_onCanvasClicked);
 
     state = SimulationState.running;
   }
@@ -85,9 +85,6 @@ class Simulation {
   }
 
   void set state(SimulationState value) {
-
-
-
     if (value == SimulationState.running) {
       _pauseButton.value = "Pause";
       _pauseButton.disabled = false;
@@ -109,5 +106,10 @@ class Simulation {
 
   SimulationState get state => _state;
 
+  void _onCanvasClicked(MouseEvent event) {
+    var clickLocation = event.offset;
+    var cell = _grid.cellAtLocation(clickLocation);
+    print("Clicked at $clickLocation: $cell");
+  }
 
 }

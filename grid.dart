@@ -91,7 +91,17 @@ class Grid {
     yIndex %= sizeInCells;
 
     var cellIndex = (yIndex * sizeInCells) + xIndex;
+    return _cells[cellIndex];
+  }
 
+  Cell cellAtLocation(Point<num> location) {
+    var xIndex = (location.x / _cellSize).floor();
+    var yIndex = (location.y / _cellSize).floor();
+
+    xIndex = min(xIndex, sizeInCells - 1);
+    yIndex = min(yIndex, sizeInCells - 1);
+
+    var cellIndex = (yIndex * sizeInCells) + xIndex;
     return _cells[cellIndex];
   }
 
