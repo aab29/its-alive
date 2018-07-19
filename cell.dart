@@ -1,4 +1,4 @@
-
+import "dart:html";
 import "direction.dart";
 
 class Cell {

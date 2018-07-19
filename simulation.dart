@@ -32,7 +32,11 @@ class Simulation {
     _canvasSize = _canvas.width.toDouble();
     _grid = new Grid(_canvasSize);
 
+    _canvas.draggable = true;
+
     _canvas.onClick.listen(_onCanvasClicked);
+    _canvas.onDragOver.listen(_onCanvasMouseDragged);
+//    _canvas.onDrag.listen(_onCanvasMouseDragged);
     _fpsBox.onInput.listen((_) => _updateFps());
     _pauseButton.onClick.listen(_onPausePressed);
     _clearButton.onClick.listen(_onClearPressed);
@@ -132,7 +136,6 @@ class Simulation {
   SimulationState get state => _state;
 
   void _onCanvasClicked(MouseEvent event) {
-    
     if (state == SimulationState.running) {
       state = SimulationState.paused;
     } else if ((state == SimulationState.paused) ||
@@ -145,6 +148,22 @@ class Simulation {
     } else {
       throw(new UnsupportedError("Canvas clicked with unsupported state: $state"));
     }
+  }
+
+  void _onCanvasMouseDragged(MouseEvent event) {
+    if (state == SimulationState.running) {
+      state = SimulationState.paused;
+    } else if ((state == SimulationState.paused) ||
+        (state == SimulationState.stopped)) {
+      var clickLocation = event.offset;
+      var cell = _grid.cellAtLocation(clickLocation);
+      print("Dragged at $clickLocation: $cell");
+      cell.isAlive = true;
+      _grid.draw(_context);
+    } else {
+      throw(new UnsupportedError("Canvas mouse dragged with unsupported state: $state"));
+    }
+
   }
 
 }

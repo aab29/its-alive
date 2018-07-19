@@ -81,16 +81,27 @@ class Grid {
 
     for (var cell in _cells) {
       context
-          ..setFillColorRgb(0, cell.fillBrightness, 0)
-          ..fillRect(
-              cell.xIndex * _cellSize + _cellPadding,
-              cell.yIndex * _cellSize + _cellPadding,
-              _cellSize - 2.0 * _cellPadding,
-              _cellSize - 2.0 * _cellPadding
-          );
+        ..setFillColorRgb(0, cell.fillBrightness, 0)
+        ..fillRect(
+            cell.xIndex * _cellSize + _cellPadding,
+            cell.yIndex * _cellSize + _cellPadding,
+            _cellSize - 2.0 * _cellPadding,
+            _cellSize - 2.0 * _cellPadding
+        );
     }
 
   }
+
+//  void drawCell(CanvasRenderingContext2D context, Cell cell) {
+//    context
+//      ..setFillColorRgb(0, cell.fillBrightness, 0)
+//      ..fillRect(
+//          cell.xIndex * _cellSize + _cellPadding,
+//          cell.yIndex * _cellSize + _cellPadding,
+//          _cellSize - 2.0 * _cellPadding,
+//          _cellSize - 2.0 * _cellPadding
+//      );
+//  }
 
   Cell _wrappedCell(int xIndex, int yIndex) {
     xIndex %= sizeInCells;
