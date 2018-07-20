@@ -8,7 +8,7 @@ class Grid {
   static const sizeInCells = 40;
   static const cellsCount = sizeInCells * sizeInCells;
 
-  static final Random randomGenerator = new Random();
+  static const gridBrightness = 38;
 
   final double _canvasSize;
 
@@ -23,23 +23,19 @@ class Grid {
 
     _buildCells();
     _linkCellNeighbors();
-
     randomizeCells();
   }
 
   void _buildCells() {
-
     for (var cellIndex = 0; cellIndex < cellsCount; cellIndex++) {
       var xIndex = cellIndex % sizeInCells;
       var yIndex = cellIndex ~/ sizeInCells;
 
       _cells[cellIndex] = new Cell(xIndex, yIndex);
     }
-
   }
 
   void _linkCellNeighbors() {
-
     for (var cell in _cells) {
       var xIndex = cell.xIndex;
       var yIndex = cell.yIndex;
@@ -53,30 +49,21 @@ class Grid {
       cell.assignNeighbor(Direction.south, _wrappedCell(xIndex, yIndex + 1));
       cell.assignNeighbor(Direction.southEast, _wrappedCell(xIndex + 1, yIndex + 1));
     }
-
   }
 
-  void randomizeCells() {
-    for (var cell in _cells) {
-      cell.isAlive = randomGenerator.nextBool();
-    }
-  }
+  void randomizeCells() => _cells.forEach((cell) => cell.randomize());
 
-  void clear() {
-    for (var cell in _cells) {
-      cell.isAlive = false;
-    }
-  }
+  void clear() => _cells.forEach((cell) => cell.clear());
 
   void update() {
-    _cells.forEach((cell) => cell.mark());
-    _cells.forEach((cell) => cell.resolve());
+    _cells.forEach((cell) => cell.determineSurvivalMarking());
+    _cells.forEach((cell) => cell.resolveSurvival());
   }
 
   void draw(CanvasRenderingContext2D context) {
 
     context
-        ..setFillColorRgb(0, 38, 0)
+        ..setFillColorRgb(0, gridBrightness, 0)
         ..fillRect(0.0, 0.0, _canvasSize, _canvasSize);
 
     for (var cell in _cells) {
@@ -91,17 +78,6 @@ class Grid {
     }
 
   }
-
-//  void drawCell(CanvasRenderingContext2D context, Cell cell) {
-//    context
-//      ..setFillColorRgb(0, cell.fillBrightness, 0)
-//      ..fillRect(
-//          cell.xIndex * _cellSize + _cellPadding,
-//          cell.yIndex * _cellSize + _cellPadding,
-//          _cellSize - 2.0 * _cellPadding,
-//          _cellSize - 2.0 * _cellPadding
-//      );
-//  }
 
   Cell _wrappedCell(int xIndex, int yIndex) {
     xIndex %= sizeInCells;

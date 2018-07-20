@@ -1,6 +1,7 @@
 import "dart:html";
-import "grid.dart";
 import "dart:async";
+
+import "grid.dart";
 
 enum SimulationState {
   running,
@@ -37,7 +38,7 @@ class Simulation {
 
     _canvas.onClick.listen(_onCanvasClicked);
     _canvas.onDragOver.listen(_onCanvasMouseDragged);
-    _fpsBox.onInput.listen((_) => _updateFps());
+    _fpsBox.onChange.listen((_) => _refreshFramerate());
     _pauseButton.onClick.listen(_onPausePressed);
     _stepButton.onClick.listen(_onStepPressed);
     _clearButton.onClick.listen(_onClearPressed);
@@ -56,7 +57,7 @@ class Simulation {
   }
 
   void _startAnimating() {
-    _updateFps();
+    _refreshFramerate();
     _animationFrameID = window.requestAnimationFrame(_update);
   }
 
@@ -71,15 +72,10 @@ class Simulation {
     });
   }
 
-  void _updateFps() {
+  void _refreshFramerate() {
     var fps = int.tryParse(_fpsBox.value) ?? 20;
-    if (fps < 5) {
-      fps = 5;
-    } else if (fps > 60) {
-      fps = 60;
-    }
+    fps = fps.clamp(5, 60);
     _fpsBox.value = fps.toString();
-
     _timerDuration = new Duration(milliseconds: 1000 ~/ fps);
   }
 
@@ -141,7 +137,7 @@ class Simulation {
                (state == SimulationState.stopped)) {
       var clickLocation = event.offset;
       var cell = _grid.cellAtLocation(clickLocation);
-      cell.isAlive = !(cell.isAlive);
+      cell.invert();
       _grid.draw(_context);
     } else {
       throw(new UnsupportedError("Canvas clicked with unsupported state: $state"));
@@ -160,7 +156,6 @@ class Simulation {
     } else {
       throw(new UnsupportedError("Canvas mouse dragged with unsupported state: $state"));
     }
-
   }
 
 }

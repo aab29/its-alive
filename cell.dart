@@ -1,9 +1,15 @@
-import "dart:html";
 import "direction.dart";
+import "dart:math";
 
 class Cell {
 
-  List<Cell> neighbors = new List(Direction.values.length);
+  static const starvationNeighborsCount = 1;
+  static const overcrowdingNeighborsCount = 4;
+  static const idealNeighborsCount = 3;
+
+  static final Random randomGenerator = new Random();
+
+  List<Cell> _neighbors = new List(Direction.values.length);
 
   bool isAlive = false;
   bool isMarkedToLive = false;
@@ -13,7 +19,7 @@ class Cell {
 
   Cell(this.xIndex, this.yIndex);
 
-  void assignNeighbor(Direction direction, Cell neighbor) => neighbors[direction.index] = neighbor;
+  void assignNeighbor(Direction direction, Cell neighbor) => _neighbors[direction.index] = neighbor;
 
   int get fillBrightness {
     if (isAlive) {
@@ -25,7 +31,7 @@ class Cell {
 
   int get livingNeighborsCount {
     int count = 0;
-    for (var neighbor in neighbors) {
+    for (var neighbor in _neighbors) {
       if (neighbor.isAlive) {
         count++;
       }
@@ -33,19 +39,24 @@ class Cell {
     return count;
   }
 
-  void mark() {
+  void determineSurvivalMarking() {
     isMarkedToLive = isAlive;
 
     var count = livingNeighborsCount;
 
-    if ((count < 2) || (count > 3)) {
+    if ((count <= starvationNeighborsCount) ||
+        (count >= overcrowdingNeighborsCount)) {
       isMarkedToLive = false;
-    } else if (count == 3) {
+    } else if (count == idealNeighborsCount) {
       isMarkedToLive = true;
     }
   }
 
-  void resolve() => isAlive = isMarkedToLive;
+  void resolveSurvival() => isAlive = isMarkedToLive;
+
+  void clear() => isAlive = false;
+  void invert() => isAlive = !isAlive;
+  void randomize() => isAlive = randomGenerator.nextBool();
 
   @override
   String toString() => "Cell($xIndex, $yIndex)";
