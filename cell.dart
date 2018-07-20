@@ -2,7 +2,6 @@ import "direction.dart";
 import "dart:math";
 
 class Cell {
-
   static const starvationNeighborsCount = 1;
   static const overcrowdingNeighborsCount = 4;
   static const idealNeighborsCount = 3;
@@ -19,7 +18,8 @@ class Cell {
 
   Cell(this.xIndex, this.yIndex);
 
-  void assignNeighbor(Direction direction, Cell neighbor) => _neighbors[direction.index] = neighbor;
+  void assignNeighbor(Direction direction, Cell neighbor) =>
+      _neighbors[direction.index] = neighbor;
 
   int get fillBrightness {
     if (isAlive) {
@@ -60,5 +60,4 @@ class Cell {
 
   @override
   String toString() => "Cell($xIndex, $yIndex)";
-
 }

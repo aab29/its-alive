@@ -4,7 +4,6 @@ import "cell.dart";
 import "direction.dart";
 
 class Grid {
-
   static const sizeInCells = 40;
   static const cellsCount = sizeInCells * sizeInCells;
 
@@ -40,14 +39,18 @@ class Grid {
       var xIndex = cell.xIndex;
       var yIndex = cell.yIndex;
 
-      cell.assignNeighbor(Direction.northWest, _wrappedCell(xIndex - 1, yIndex - 1));
+      cell.assignNeighbor(
+          Direction.northWest, _wrappedCell(xIndex - 1, yIndex - 1));
       cell.assignNeighbor(Direction.north, _wrappedCell(xIndex, yIndex - 1));
-      cell.assignNeighbor(Direction.northEast, _wrappedCell(xIndex + 1, yIndex - 1));
+      cell.assignNeighbor(
+          Direction.northEast, _wrappedCell(xIndex + 1, yIndex - 1));
       cell.assignNeighbor(Direction.west, _wrappedCell(xIndex - 1, yIndex));
       cell.assignNeighbor(Direction.east, _wrappedCell(xIndex + 1, yIndex));
-      cell.assignNeighbor(Direction.southWest, _wrappedCell(xIndex - 1, yIndex + 1));
+      cell.assignNeighbor(
+          Direction.southWest, _wrappedCell(xIndex - 1, yIndex + 1));
       cell.assignNeighbor(Direction.south, _wrappedCell(xIndex, yIndex + 1));
-      cell.assignNeighbor(Direction.southEast, _wrappedCell(xIndex + 1, yIndex + 1));
+      cell.assignNeighbor(
+          Direction.southEast, _wrappedCell(xIndex + 1, yIndex + 1));
     }
   }
 
@@ -61,10 +64,9 @@ class Grid {
   }
 
   void draw(CanvasRenderingContext2D context) {
-
     context
-        ..setFillColorRgb(0, gridBrightness, 0)
-        ..fillRect(0.0, 0.0, _canvasSize, _canvasSize);
+      ..setFillColorRgb(0, gridBrightness, 0)
+      ..fillRect(0.0, 0.0, _canvasSize, _canvasSize);
 
     for (var cell in _cells) {
       context
@@ -73,10 +75,8 @@ class Grid {
             cell.xIndex * _cellSize + _cellPadding,
             cell.yIndex * _cellSize + _cellPadding,
             _cellSize - 2.0 * _cellPadding,
-            _cellSize - 2.0 * _cellPadding
-        );
+            _cellSize - 2.0 * _cellPadding);
     }
-
   }
 
   Cell _wrappedCell(int xIndex, int yIndex) {
@@ -97,6 +97,4 @@ class Grid {
     var cellIndex = (yIndex * sizeInCells) + xIndex;
     return _cells[cellIndex];
   }
-
-
 }
