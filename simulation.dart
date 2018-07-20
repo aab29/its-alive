@@ -36,12 +36,12 @@ class Simulation {
 
     _canvas.onClick.listen(_onCanvasClicked);
     _canvas.onDragOver.listen(_onCanvasMouseDragged);
-//    _canvas.onDrag.listen(_onCanvasMouseDragged);
     _fpsBox.onInput.listen((_) => _updateFps());
     _pauseButton.onClick.listen(_onPausePressed);
     _clearButton.onClick.listen(_onClearPressed);
     _randomizeButton.onClick.listen(_onRandomizePressed);
 
+    _pauseButton.disabled = false;
     _clearButton.disabled = false;
     _randomizeButton.disabled = false;
 
@@ -79,16 +79,13 @@ class Simulation {
     _fpsBox.value = fps.toString();
 
     _timerDuration = new Duration(milliseconds: 1000 ~/ fps);
-
-    print("Now FPS is $fps");
   }
 
   void _onPausePressed(_) {
-    print("Pause pressed");
-    
     if (state == SimulationState.running) {
       state = SimulationState.paused;
-    } else if (state == SimulationState.paused) {
+    } else if ((state == SimulationState.paused) ||
+                (state == SimulationState.stopped)){
       state = SimulationState.running;
     } else {
       throw(new StateError("Cannot pause/resume from current state: $state"));
@@ -96,17 +93,13 @@ class Simulation {
   }
 
   void _onClearPressed(_) {
-    print("Clear pressed");
-
-    state = SimulationState.paused;
+    state = SimulationState.stopped;
     _grid.clear();
     _grid.draw(_context);
   }
 
   void _onRandomizePressed(_) {
-    print("Randomize pressed");
-
-    state = SimulationState.paused;
+    state = SimulationState.stopped;
     _grid.randomizeCells();
     _grid.draw(_context);
   }
@@ -115,16 +108,12 @@ class Simulation {
 
     if (value == SimulationState.running) {
       _pauseButton.value = "Pause";
-      _pauseButton.disabled = false;
-
       _startAnimating();
     } else if (value == SimulationState.paused) {
       _pauseButton.value = "Resume";
-      _pauseButton.disabled = false;
       _stopAnimating();
     } else if (value == SimulationState.stopped) {
-      _pauseButton.value = "Pause";
-      _pauseButton.disabled = true;
+      _pauseButton.value = "Start";
       _stopAnimating();
     } else {
       throw(new UnsupportedError("Unsupported simulation state: $value"));
@@ -142,7 +131,6 @@ class Simulation {
                (state == SimulationState.stopped)) {
       var clickLocation = event.offset;
       var cell = _grid.cellAtLocation(clickLocation);
-      print("Clicked at $clickLocation: $cell");
       cell.isAlive = !(cell.isAlive);
       _grid.draw(_context);
     } else {
@@ -157,7 +145,6 @@ class Simulation {
         (state == SimulationState.stopped)) {
       var clickLocation = event.offset;
       var cell = _grid.cellAtLocation(clickLocation);
-      print("Dragged at $clickLocation: $cell");
       cell.isAlive = true;
       _grid.draw(_context);
     } else {
