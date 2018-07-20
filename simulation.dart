@@ -81,7 +81,7 @@ class Simulation {
         (state == SimulationState.stopped)) {
       state = SimulationState.running;
     } else {
-      throw (new StateError("Cannot pause/resume from current state: $state"));
+      throw new StateError("Cannot pause/resume from current state: $state");
     }
   }
 
@@ -116,7 +116,7 @@ class Simulation {
       _stepButton.disabled = false;
       _stopAnimating();
     } else {
-      throw (new UnsupportedError("Unsupported simulation state: $value"));
+      throw new UnsupportedError("Unsupported simulation state: $value");
     }
 
     _state = value;
@@ -134,8 +134,8 @@ class Simulation {
       cell.invert();
       _grid.draw(_context);
     } else {
-      throw (new UnsupportedError(
-          "Canvas clicked with unsupported state: $state"));
+      throw new UnsupportedError(
+          "Canvas clicked with unsupported state: $state");
     }
   }
 
@@ -149,8 +149,8 @@ class Simulation {
       cell.isAlive = true;
       _grid.draw(_context);
     } else {
-      throw (new UnsupportedError(
-          "Canvas mouse dragged with unsupported state: $state"));
+      throw new UnsupportedError(
+          "Canvas mouse dragged with unsupported state: $state");
     }
   }
 }
