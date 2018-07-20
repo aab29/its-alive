@@ -25,6 +25,7 @@ class Simulation {
 
   NumberInputElement _fpsBox = querySelector("#fps_box");
   ButtonInputElement _pauseButton = querySelector("#pause_button");
+  ButtonInputElement _stepButton = querySelector("#step_button");
   ButtonInputElement _clearButton = querySelector("#clear_button");
   ButtonInputElement _randomizeButton = querySelector("#randomize_button");
 
@@ -38,6 +39,7 @@ class Simulation {
     _canvas.onDragOver.listen(_onCanvasMouseDragged);
     _fpsBox.onInput.listen((_) => _updateFps());
     _pauseButton.onClick.listen(_onPausePressed);
+    _stepButton.onClick.listen(_onStepPressed);
     _clearButton.onClick.listen(_onClearPressed);
     _randomizeButton.onClick.listen(_onRandomizePressed);
 
@@ -92,6 +94,11 @@ class Simulation {
     }
   }
 
+  void _onStepPressed(_) {
+    _grid.update();
+    _grid.draw(_context);
+  }
+
   void _onClearPressed(_) {
     state = SimulationState.stopped;
     _grid.clear();
@@ -108,12 +115,15 @@ class Simulation {
 
     if (value == SimulationState.running) {
       _pauseButton.value = "Pause";
+      _stepButton.disabled = true;
       _startAnimating();
     } else if (value == SimulationState.paused) {
       _pauseButton.value = "Resume";
+      _stepButton.disabled = false;
       _stopAnimating();
     } else if (value == SimulationState.stopped) {
       _pauseButton.value = "Start";
+      _stepButton.disabled = false;
       _stopAnimating();
     } else {
       throw(new UnsupportedError("Unsupported simulation state: $value"));
